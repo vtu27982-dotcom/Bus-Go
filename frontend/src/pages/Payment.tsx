@@ -237,17 +237,13 @@ const NetBankingForm = ({ totalFare, bookingId, onSuccess }: { totalFare: number
   const user = useAuthStore(state => state.user);
   const [bank, setBank] = useState('HDFC Bank');
   const [loading, setLoading] = useState(false);
-  const [searchTerm, setSearchTerm] = useState('');
-  
   // New state for Bank Login Simulation
   const [step, setStep] = useState<'selection' | 'login' | 'success'>('selection');
   const [customerId, setCustomerId] = useState('');
   const [password, setPassword] = useState('');
 
-  const popularBanks = ['HDFC Bank', 'ICICI Bank', 'State Bank of India', 'Axis Bank', 'Kotak Mahindra Bank'];
+  const popularBanks = ['SBI', 'HDFC Bank', 'ICICI Bank', 'Axis Bank', 'Kotak Bank', 'PNB'];
   const allBanks = [...popularBanks, 'Punjab National Bank', 'Bank of Baroda', 'Canara Bank', 'Union Bank of India', 'IndusInd Bank', 'Yes Bank'];
-
-  const filteredBanks = allBanks.filter(b => b.toLowerCase().includes(searchTerm.toLowerCase()));
 
   const handleProceedToLogin = (e: React.FormEvent) => {
     e.preventDefault();

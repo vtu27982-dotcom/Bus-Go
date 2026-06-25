@@ -20,7 +20,7 @@ const Profile = () => {
       setFormData({
         name: user.name || '',
         email: user.email || '',
-        phone: user.phone || '',
+        phone: (user as any).phone || '',
         password: '',
         confirmPassword: ''
       });

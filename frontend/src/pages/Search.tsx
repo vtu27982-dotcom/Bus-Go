@@ -1,7 +1,7 @@
 import { useEffect, useState, useMemo } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { Clock, MapPin, IndianRupee, Filter } from 'lucide-react';
+import { Clock, IndianRupee, Filter } from 'lucide-react';
 import { useBookingStore } from '../store/useBookingStore';
 
 const Search = () => {

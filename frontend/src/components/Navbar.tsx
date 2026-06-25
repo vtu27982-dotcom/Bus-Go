@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Bus, User, LogOut, ChevronDown } from 'lucide-react';
+import { Bus, User, ChevronDown } from 'lucide-react';
 import { useAuthStore } from '../store/useAuthStore';
 
 const Navbar = () => {
