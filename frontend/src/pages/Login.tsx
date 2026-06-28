@@ -15,7 +15,7 @@ const Login = () => {
     try {
       // In reality this connects to backend, but since we don't have backend running in env,
       // we mock it for demonstration if API fails, but let's try API first
-      const { data } = await axios.post('http://localhost:5000/api/auth/login', { email, password });
+      const { data } = await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/auth/login`, { email, password });
       setUser(data);
       toast.success('Logged in successfully!');
       navigate('/');

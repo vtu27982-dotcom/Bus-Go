@@ -41,7 +41,7 @@ const AdminDashboard = () => {
   const fetchData = async () => {
     try {
       const endpoint = activeTab === 'buses' ? '/api/buses' : '/api/routes';
-      const res = await axios.get(`http://localhost:5000${endpoint}`);
+      const res = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}${endpoint}`);
       setData(res.data);
     } catch (error) {
       console.error(error);
@@ -55,7 +55,7 @@ const AdminDashboard = () => {
         ...newBus,
         amenities: newBus.amenities.split(',').map(a => a.trim()).filter(a => a)
       };
-      await axios.post('http://localhost:5000/api/buses', payload, {
+      await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/buses`, payload, {
         headers: { Authorization: `Bearer ${user?.token}` }
       });
       toast.success('Bus added successfully!');
@@ -70,7 +70,7 @@ const AdminDashboard = () => {
   const handleAddRoute = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await axios.post('http://localhost:5000/api/routes', newRoute, {
+      await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/routes`, newRoute, {
         headers: { Authorization: `Bearer ${user?.token}` }
       });
       toast.success('Route added successfully!');

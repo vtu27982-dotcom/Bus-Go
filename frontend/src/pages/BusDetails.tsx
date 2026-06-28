@@ -18,7 +18,7 @@ const BusDetails = () => {
 
   useEffect(() => {
     if (selectedSchedule) {
-      axios.get(`http://localhost:5000/api/buses/${selectedSchedule.busId._id}`)
+      axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/buses/${selectedSchedule.busId._id}`)
         .then(res => setBus(res.data))
         .catch(err => console.error(err));
     }
@@ -70,11 +70,11 @@ const BusDetails = () => {
     
     setSubmitting(true);
     try {
-      await axios.post(`http://localhost:5000/api/buses/${bus._id}/reviews`, { rating, comment }, {
+      await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/buses/${bus._id}/reviews`, { rating, comment }, {
         headers: { Authorization: `Bearer ${user.token}` }
       });
       toast.success('Review submitted successfully');
-      const res = await axios.get(`http://localhost:5000/api/buses/${bus._id}`);
+      const res = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/buses/${bus._id}`);
       setBus(res.data);
       setComment('');
       setRating(5);

@@ -10,12 +10,15 @@ const MyBookings = () => {
 
   const fetchBookings = async () => {
     try {
-      const { data } = await axios.get('http://localhost:5000/api/bookings/my-bookings', {
+      const { data } = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/bookings/my-bookings`, {
         headers: { Authorization: `Bearer ${user?.token}` }
       });
-      setBookings(data);
+      const storedMocks = JSON.parse(localStorage.getItem('mock_bookings') || '[]');
+      setBookings([...storedMocks, ...data]);
     } catch (error) {
       console.error(error);
+      const storedMocks = JSON.parse(localStorage.getItem('mock_bookings') || '[]');
+      setBookings(storedMocks);
     } finally {
       setLoading(false);
     }
@@ -27,8 +30,19 @@ const MyBookings = () => {
 
   const cancelBooking = async (id: string) => {
     if (!window.confirm('Are you sure you want to cancel this booking?')) return;
+    
+    // Handle mock booking cancellation
+    if (id.startsWith('mock_booking_')) {
+      const storedMocks = JSON.parse(localStorage.getItem('mock_bookings') || '[]');
+      const updatedMocks = storedMocks.map((b: any) => b._id === id ? { ...b, bookingStatus: 'Cancelled' } : b);
+      localStorage.setItem('mock_bookings', JSON.stringify(updatedMocks));
+      toast.success('Booking cancelled successfully');
+      fetchBookings();
+      return;
+    }
+
     try {
-      await axios.put(`http://localhost:5000/api/bookings/${id}/cancel`, {}, {
+      await axios.put(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/bookings/${id}/cancel`, {}, {
         headers: { Authorization: `Bearer ${user?.token}` }
       });
       toast.success('Booking cancelled successfully');

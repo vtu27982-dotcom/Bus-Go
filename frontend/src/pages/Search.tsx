@@ -23,7 +23,7 @@ const Search = () => {
   useEffect(() => {
     const fetchSchedules = async () => {
       try {
-        const { data } = await axios.get(`http://localhost:5000/api/schedules/search?source=${source}&destination=${destination}&date=${date}`);
+        const { data } = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/schedules/search?source=${source}&destination=${destination}&date=${date}`);
         setSchedules(data);
       } catch (error) {
         console.error(error);

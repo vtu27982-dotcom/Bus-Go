@@ -22,7 +22,7 @@ const StripeCardForm = ({ totalFare, bookingId, onSuccess }: { totalFare: number
   useEffect(() => {
     const fetchClientSecret = async () => {
       try {
-        const { data } = await axios.post('http://localhost:5000/api/payments/create-payment-intent', { amount: totalFare }, {
+        const { data } = await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/payments/create-payment-intent`, { amount: totalFare }, {
           headers: { Authorization: `Bearer ${user?.token}` }
         });
         setClientSecret(data.clientSecret);
@@ -78,7 +78,7 @@ const StripeCardForm = ({ totalFare, bookingId, onSuccess }: { totalFare: number
         return;
       }
 
-      await axios.post('http://localhost:5000/api/payments/process', {
+      await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/payments/process`, {
         bookingId, amount: totalFare, paymentMethod: 'Card', paymentIntentId
       }, { headers: { Authorization: `Bearer ${user?.token}` } });
       setSuccess(true);
@@ -174,7 +174,7 @@ const UpiForm = ({ totalFare, bookingId, onSuccess }: { totalFare: number, booki
         return;
       }
 
-      await axios.post('http://localhost:5000/api/payments/process', {
+      await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/payments/process`, {
         bookingId, amount: totalFare, paymentMethod: paymentMethodStr, paymentIntentId: `upi_${Math.random().toString(36).substr(2, 9)}`
       }, { headers: { Authorization: `Bearer ${user?.token}` } });
       
@@ -267,7 +267,7 @@ const NetBankingForm = ({ totalFare, bookingId, onSuccess }: { totalFare: number
         return;
       }
 
-      await axios.post('http://localhost:5000/api/payments/process', {
+      await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/payments/process`, {
         bookingId, amount: totalFare, paymentMethod: `NetBanking (${bank})`, paymentIntentId: `nb_${Math.random().toString(36).substr(2, 9)}`
       }, { headers: { Authorization: `Bearer ${user?.token}` } });
       setStep('success');
@@ -424,7 +424,7 @@ const Payment = () => {
   useEffect(() => {
     const createInitialBooking = async () => {
       try {
-        const res = await axios.post('http://localhost:5000/api/bookings', {
+        const res = await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/bookings`, {
           scheduleId: selectedSchedule._id, seatNumbers: selectedSeats, passengers, totalFare: finalFare
         }, { headers: { Authorization: `Bearer ${user?.token}` } });
         setBookingId(res.data._id);
@@ -455,8 +455,9 @@ const Payment = () => {
   };
 
   const handleSuccess = (forcedBookingId?: string) => {
+    const stateData = { selectedSeats, selectedSchedule, finalFare };
     clearBooking();
-    navigate(`/booking/confirmation/${forcedBookingId || bookingId}`);
+    navigate(`/booking/confirmation/${forcedBookingId || bookingId}`, { state: stateData });
   };
 
   return (

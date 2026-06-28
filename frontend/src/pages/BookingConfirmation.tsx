@@ -1,39 +1,50 @@
 import { useEffect, useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { useAuthStore } from '../store/useAuthStore';
 import { CheckCircle, Download } from 'lucide-react';
 
 const BookingConfirmation = () => {
   const { id } = useParams();
+  const location = useLocation();
   const user = useAuthStore(state => state.user);
+  const stateData = location.state as any || {};
+  
   const [booking, setBooking] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchBooking = async () => {
       if (id?.startsWith('mock_booking_')) {
-        setBooking({
+        const mockBooking = {
           _id: id,
           bookingStatus: 'Confirmed',
           paymentStatus: 'Paid',
-          totalFare: 500,
-          seatNumbers: ['1A', '1B'],
-          passengers: [{ name: 'Guest User', age: 25, gender: 'Male' }],
-          scheduleId: {
+          totalFare: stateData.finalFare || 500,
+          seatNumbers: stateData.selectedSeats?.length > 0 ? stateData.selectedSeats : ['1A', '1B'],
+          passengers: [{ name: user?.name || 'Guest User', age: 25, gender: 'Male' }],
+          scheduleId: stateData.selectedSchedule || {
             departureTime: '08:00 AM',
             arrivalTime: '02:00 PM',
             date: new Date(),
             routeId: { source: 'Demo City', destination: 'Destination City' },
             busId: { operator: 'Guest Travels', type: 'AC Sleeper' }
           }
-        });
+        };
+        setBooking(mockBooking);
+        
+        // Save mock booking to localStorage so it appears in history
+        const storedMocks = JSON.parse(localStorage.getItem('mock_bookings') || '[]');
+        if (!storedMocks.find((b: any) => b._id === id)) {
+          localStorage.setItem('mock_bookings', JSON.stringify([mockBooking, ...storedMocks]));
+        }
+        
         setLoading(false);
         return;
       }
 
       try {
-        const { data } = await axios.get(`http://localhost:5000/api/bookings/${id}`, {
+        const { data } = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/bookings/${id}`, {
           headers: { Authorization: `Bearer ${user?.token}` }
         });
         setBooking(data);
