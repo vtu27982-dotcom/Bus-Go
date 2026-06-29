@@ -54,7 +54,7 @@ export const searchSchedules = async (req: Request, res: Response) => {
         }
 
         if (buses.length > 0) {
-          const newSchedules = [];
+          const newSchedules: any[] =[];
           for (const bus of buses) {
             const schedule = new Schedule({
               busId: bus._id,
